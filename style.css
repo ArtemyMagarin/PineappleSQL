@@ -19,3 +19,7 @@ footer {
 a:hover, a:focus {
 	text-decoration: none;
 }
+.card-test {
+	padding: 2%;
+	margin-bottom: 1%;
+}
