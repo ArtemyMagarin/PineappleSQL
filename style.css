@@ -4,6 +4,9 @@
 .progress {
 	height: 4px;
 }
+.list-group-item-action:hover {
+	background-color: white;
+}
 #main {
     padding-top: 2%;
 }
