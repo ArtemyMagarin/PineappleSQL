@@ -1,6 +1,9 @@
 .jumbotron {
 		background-image: url(https://wallpaperscraft.com/image/paper_dents_texture_76553_1920x1080.jpg);
 	}
+.progress {
+	height: 4px;
+}
 #main {
     padding-top: 2%;
 }
