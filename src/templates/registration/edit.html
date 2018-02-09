@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Редактировать аккаунт
+{% endblock %}
+
+{% block form %} 
+        <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a> 
+        <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+        <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+{% block content %}
+    <h3>Редактировать аккаунт  |  <small class="text-muted"><a href="{% url 'accounts:password_change' %}">Сменить пароль</a></small></h3>
+    <br>
+
+    <form action="{% url 'accounts:edit' %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {% for field in form %}
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">{{ field.label }}</label>
+            <div class="col-sm-10">
+              {{ field |add_class:"form-control" }}
+            </div>  
+        </div>
+
+
+        {% if field.errors %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger" role="alert">
+              {{error}}
+            </div>
+            {% endfor %}
+        {% endif %}
+ 
+        
+        {% endfor %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <button type="submit" class="btn btn-block btn-primary">Сохранить</button>
+    </form>
+{% endblock %}
+
