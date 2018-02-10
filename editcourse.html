@@ -8,6 +8,7 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="sortable.min.js"></script>
 </head>
 
 <body>
@@ -34,36 +35,46 @@
 			<button class="btn btn-primary">Добавить задание</button>
 		</div><br/>
 	
-		<div class="card card-outline card-test">			
-			<div class="d-flex justify-content-between align-items-center">
-				<div>
-					<h4>Задание 1</h4>	
-					Создать SELECT запрос на вывод id пользователей				
-				</div>		
-				<button type="button" class="btn btn-secondary">Редактировать</button>		
+		<div id="sortable_div">
+			<div class="card card-outline card-test">				
+				<div class="d-flex justify-content-between align-items-center drag">
+					<div>
+						<h4>Задание 1</h4>	
+						Создать SELECT запрос на вывод id пользователей				
+					</div>							
+					<button type="button" class="btn btn-secondary">Редактировать</button>
+				</div>
 			</div>
-		</div>
-	
-		<div class="card card-outline card-test">			
-			<div class="d-flex justify-content-between align-items-center">
-				<div>
-					<h4>Задание 2</h4>	
-					Создать SELECT запрос на вывод id машин				
-				</div>			
-				<button type="button" class="btn btn-secondary">Редактировать</button>			
+		
+			<div class="card card-outline card-test">			
+				<div class="d-flex justify-content-between align-items-center drag">
+					<div>
+						<h4>Задание 2</h4>	
+						Создать SELECT запрос на вывод id машин				
+					</div>			
+					<button type="button" class="btn btn-secondary">Редактировать</button>			
+				</div>
 			</div>
-		</div>
-	
-		<div class="card card-outline card-test">			
-			<div class="d-flex justify-content-between align-items-center">
-				<div>
-					<h4>Задание 3</h4>	
-					Создать SELECT запрос на вывод id самолетов				
-				</div>			
-				<button type="button" class="btn btn-secondary">Редактировать</button>		
+		
+			<div class="card card-outline card-test">			
+				<div class="d-flex justify-content-between align-items-center drag">
+					<div>
+						<h4>Задание 3</h4>	
+						Создать SELECT запрос на вывод id самолетов				
+					</div>			
+					<button type="button" class="btn btn-secondary">Редактировать</button>		
+				</div>
 			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		var container = document.getElementById("sortable_div");
+		new Sortable(container,{
+			 handle: ".drag"
+			} 
+			);
+	</script>
 
 </body>
 </html>
