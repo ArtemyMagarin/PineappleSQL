@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+
+{% block title %} 
+       Создание курса
+{% endblock %}
+
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a> 
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+
+{% block content %}
+	{% if form.instance.pk %}
+	<form action="{% url 'tasks:update_course' pk=form.instance.pk %}" method='POST'>
+	{% else %}
+	<form action="{% url 'tasks:create_course' %}" method='POST'>
+	{% endif%}
+
+		{% csrf_token %}
+
+        {% for field in form %}
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">{{ field.label }}</label>
+            <div class="col-sm-10">
+              {{ field |add_class:"form-control" }}
+            </div>  
+        </div>
+
+
+        {% if field.errors %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger" role="alert">
+              {{error}}
+            </div>
+            {% endfor %}
+        {% endif %}
+ 
+        
+        {% endfor %}
+
+        <div class="form-group row">
+	      <label class="col-sm-2">Checkbox</label>
+	      <div class="col-sm-10">
+
+	        <div class="form-check">
+	          <label class="form-check-label">
+	            <input class="form-check-input" type="checkbox">
+	          </label>
+	        </div>
+
+	      </div>
+	    </div>
+	    <button class="btn btn-lg btn-primary btn-block" type="submit">Сохранить</button>
+
+   </form>
+{% endblock %}

@@ -56,6 +56,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     groupNum = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
 
+    is_teacher = models.BooleanField(default=False)
+
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 

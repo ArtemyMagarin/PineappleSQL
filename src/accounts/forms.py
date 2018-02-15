@@ -17,6 +17,7 @@ class UserCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('last_name', 'first_name', 'middle_name', 'groupNum', 'email', 'password', 'password2')
+        # exclude = ('is_teacher', )
 
     def clean(self):
         cleaned_data = super(UserCreateForm, self).clean()

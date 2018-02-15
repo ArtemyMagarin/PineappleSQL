@@ -1,0 +1,99 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %} Ваши курсы {% endblock %} 
+
+{% block extra_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'base/course_list.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/icons.css' %}">
+{% endblock %} 
+
+{% block form %} 
+<a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a> <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a> <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a> 
+{% endblock %} 
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h4 class="mb-0 align-middle">Ваши курсы</h4>
+    {% if user.is_teacher %}
+    <a class="btn btn-primary" href="{% url 'tasks:create_course' %}">Новый курс</a>
+    {% else %}
+    <a class="btn btn-primary" href="{% url 'tasks:global_course_list' %}">Найти курсы</a>
+    {% endif %}
+</div>
+<br>
+
+
+<div class="row courses-list">
+    {% for course in courses %}
+
+    <div class="col-md-4 col-sm-6 col-xs-12 col b_course_container">
+        <div class="course">
+            <a href="{% url 'tasks:view_course' pk=course.pk %}" class="uho">
+          
+            
+                <img src="https://s31333.cdn.ngenix.net/f1367c/CACHE/images/cover/654f3a08fd4e191200fd890c4772620e4fa36630/53eae97be9910368bafbff6771ab81d0.png" alt="" class="course-image">
+          
+            </a>
+
+            <div class="course-content">
+
+            <div class="course-title"><a href="{% url 'tasks:view_course' pk=course.pk %}">{{course.name|capfirst}}</a></div>
+
+            <div class="progress"></div>
+
+            <div class="course-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Cложность:</span>
+                <span> {% with ''|center:course.difficulty as range %} {% for _ in range %} <i class="fas fa-star"></i> {% endfor %} {% endwith %} {% with course.difficulty|add:':' as len %} {% with '12345'|slice:len as range %} {% for _ in range %} <i class="far fa-star"></i> {% endfor %} {% endwith %} {% endwith %}</span>
+            </div>
+            </div>
+            <div class="progress"></div>
+
+            <div class="course-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Cтатус:</span>
+                <span> {% if course.is_published %} Опубликован {% else %} Скрыт {% endif %}</span>
+            </div>
+            </div>
+
+            <div class="progress"></div>
+
+            <div class="course-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Рейтинг:</span>
+                <span>{{course.rating}}</span>
+            </div>
+            </div>
+            
+<!--                 <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary" data-toggle="dropdown" id="dropdownMenu{{forloop.counter}}" type="button"><i class="fas fa-bars"></i></button> -->
+
+<!--                 <div aria-labelledby="dropdownMenu{{forloop.counter}}" class="dropdown-menu dropdown-menu-right">
+	                <a href="{% url 'tasks:task_list' course_id=course.pk %}" class="dropdown-item">Список заданий</a>
+	                {% if user.is_teacher %}
+                    <a href="{% url 'tasks:update_course' pk=course.pk %}" class="dropdown-item">Редактировать</a> 
+                    <a href="#" class="dropdown-item">Статистика</a>
+                    <a href="#" class="dropdown-item">Пригласить студентов</a>
+                    {% else %}
+                    <a href="#" class="dropdown-item">Записаться на курс</a>
+                    <a href="#" class="dropdown-item">Отписаться от курса</a>
+                    {% endif %}
+                </div> -->
+            </div>
+
+
+            <div class="footer-line">
+                <a href="{% url 'tasks:update_course' pk=course.pk %}">Редактировать</a>
+            </div>
+       
+
+
+        
+        </div>
+    </div>
+    {% empty %}
+
+    <p style="padding-left: 10px;">Пока нет курсов</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+       Курс "{{course.name}}"
+{% endblock %} 
+
+{% block extra_links %}
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="{% static 'base/sortable.min.js' %}"></script>
+
+	<script type="text/javascript">
+	var container = document.getElementById("sortable_div");
+	new Sortable(container,{
+		 handle: ".drag"
+		} 
+		);
+	</script>
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+
+{% block content %}
+	<div class="d-flex justify-content-between align-items-center">
+		<h4>{{course.name|capfirst}}</h4>
+		{% if user.is_teacher %}
+		<a href="{% url 'tasks:create_task' course_id=course.id %}" class="btn btn-primary">Добавить задание</a>
+		{% endif %}
+	</div>
+	<br>
+
+	{% if tasks.first %}
+	<div id="sortable_div">
+	{% for task in tasks %}
+		<div class="card card-outline card-test">				
+			<div class="d-flex justify-content-between align-items-center drag">
+				<div>
+					<h4><small>{{ forloop.counter }}.</small> <a href="{% url 'tasks:view_task' course_id=course.id pk=task.pk %}">{{task.name|capfirst}}</a></h4>	
+					{{task.question|truncatewords:10|capfirst}}	<br>
+					<span class="text-muted">Сложность:</span> 
+					<span class="difficulty-stars text-muted">
+
+
+					{# Это настоящая магия. Отвечает за рендер звездочек сложности #}
+
+					{% with ''|center:task.difficulty as range %}
+						{% for _ in range %}
+						    <i class="fas fa-star"></i>
+						{% endfor %}
+					{% endwith %}
+
+					{% with task.difficulty|add:':' as len %}
+						{% with '12345'|slice:len as range %}
+								{% for _ in range %}
+								    <i class="far fa-star"></i>
+								{% endfor %}
+						{% endwith %}
+					{% endwith %}	
+						
+
+					</span>
+					<br>
+					<span class="text-muted">Статус: 
+					{% if task.is_published %}				
+					В общем доступе
+					{% else %}
+						{% if user.is_teacher %}
+							Задание скрыто
+						{% else %}
+							Доступен только Вам
+						{% endif %}
+					{% endif %}
+					</span> 			
+				</div>	
+				{% if user.is_teacher %}						
+				<a href="{% url 'tasks:update_task' course_id=course.id pk=task.pk %}" class="btn btn-secondary">Редактировать</a>
+				{% endif %}
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+
+
+	{% else %}
+		Пока нет заданий
+	{% endif %}
+
+{% endblock %}

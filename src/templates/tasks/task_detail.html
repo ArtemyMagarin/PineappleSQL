@@ -1,0 +1,78 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+       Просмотр задания
+{% endblock %} 
+
+{% block extra_links %}
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+			<div class="col-md-7">
+			    <h4>Задание 1</h4>
+			</div>
+			<div class="col-md-5">
+				<div class="float-right">
+					
+					<text>Автор: Антон Говоров</text>
+					<i class="fas fa-circle" style="color:#000099"></i>
+					<i class="fas fa-circle" style="color:#000099"></i>
+					<i class="far fa-circle" style="color:#000099"></i>
+					<i class="far fa-circle" style="color:#000099"></i>
+					<i class="far fa-circle" style="color:#000099"></i>
+				</div>	
+			</div>	
+		</div>
+		<br/>
+		<div class="row">
+			<div class="col-md-12">
+			<h5>База данных</h5>
+			<p>Краткая информация о базе данных "Аэрофлот":
+Схема БД состоит из четырех отношений:
+	Company (ID_comp, name)
+	Trip(trip_no, ID_comp, plane, town_from, town_to, time_out, time_in)
+	Passenger(ID_psg, name)
+	Pass_in_trip(trip_no, date, ID_psg, place)
+Таблица Company содержит идентификатор и название компании, осуществляющей перевозку пассажиров. Таблица Trip содержит информацию о рейсах: номер рейса, идентификатор компании, тип самолета, город отправления, город прибытия, время отправления и время прибытия. Таблица Passenger содержит идентификатор и имя пассажира. Таблица Pass_in_trip содержит информацию о полетах: номер рейса, дата вылета (день), идентификатор пассажира и место, на котором он сидел во время полета. При этом следует иметь в виду, что
+	- рейсы выполняются ежедневно, а длительность полета любого рейса менее суток; town_from   <> town_to;
+	- время и дата учитывается относительно одного часового пояса;
+	- время отправления и прибытия указывается с точностью до минуты;
+	- среди пассажиров могут быть однофамильцы (одинаковые значения поля name, например, Bruce Willis);
+	- номер места в салоне – это число с буквой; число определяет номер ряда, буква (a – d) – место в ряду слева направо в алфавитном порядке;
+	- связи и ограничения показаны на схеме данных.</p>
+             </div>
+		</div>	
+		<div class="row">
+			<div class="col-md-12">
+			<h5>Текст задания</h5>
+			<p>Найдите номер модели, скорость и размер жесткого диска для всех ПК стоимостью менее 500 дол. Вывести: model, speed и hd
+			</p>
+		</div>
+		</div>
+		<div class="row card card-outline card-test#000099">
+			<div class="col-sm-6">	
+				<p>Необходимые ключевые слова: SELECT, ORDER BY</p>
+			</div>
+			<div class="col-sm-6">	
+				<p>Запрещенные ключевые слова: IF</p>
+			</div>
+		</div>
+		<div class="row">
+		<div class="col-md-12">	
+			<h5>Эталонный текст запроса</h5>
+			<p id="sqlquery" class="card card-outline card-test"> SELECT * FROM myTable</p>
+		</div>
+		</div>
+		<input type="number" id="task_id" hidden="True">
+		<button class="btn btn-primary" type="submit" style="margin-bottom: 3%">Редактировать</button>
+
+{% endblock %}

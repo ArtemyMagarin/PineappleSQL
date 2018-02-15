@@ -20,7 +20,7 @@
 {% block content %}
         <div class="jumbotron">
             <h1>Проверь свои знания SQL</h1> 
-            <button class="btn btn-lg btn-primary">А ты пройдёшь тест?</button>
+            <a href="{% url 'accounts:register' %}" class="btn btn-lg btn-primary">А ты пройдёшь тест?</a>
         </div>
         <div class="row">
             <div class="col-md-4">
@@ -48,4 +48,14 @@
             </div>
 
         </div>
+{% endblock %}
+
+{% block footer %} 
+<footer class="fixed-bottom">
+    <div class="container">
+      <span class="text-muted">
+        создано Pineapple: Артемий Магарин, <a href="https://t.me/O_Giroud">Пётр Ревякин</a>, <a href="https://www.linkedin.com/in/valeria-stromtsova-67016512b/">Валерия Стромцова</a>, Егор Скрутелев
+      </span>
+    </div>
+</footer>
 {% endblock %}

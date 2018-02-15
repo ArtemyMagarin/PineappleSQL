@@ -7,7 +7,7 @@ def root(*dirs):
     return os.path.abspath(os.path.join(base_dir, *dirs))
 
 
-ALLOWED_HOSTS = ['185.147.82.78',]
+ALLOWED_HOSTS = ['185.147.82.78', 'localhost', '127.0.0.1']
 
 BASE_DIR = root()
 
@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'tasks',
     'widget_tweaks',
     # 'notes',
     # 'accounts',

@@ -22,6 +22,7 @@ from accounts.views import IndexLoginView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('accounts.urls')),
+    url(r'^courses/', include('tasks.urls')),
     url(r'^$', IndexLoginView.as_view(), name='index'),
 
 ]

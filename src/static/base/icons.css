@@ -1,0 +1,16 @@
+.icon {
+    width: 36px;
+    height: 36px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 7px;
+    overflow: hidden;
+}
+
+.icon-apple {
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFYSURBVEhLtdXPK0RRGMbxGwuUkWRBipKysZFkISkpC+UfIClKIZaWytIaO5ZkL1mysRoLLBWK7JQUJT+/7zSnbtN7Tve9d+5Tn273Ts+809zOOVHGdGID06W7nLKED/xBhuWSRcgAZwJVTyve4YZcowZVzwrckFf0I5fsQIZcoE8eZEkT1nCKq/J1HT3oLV8LmMERLlHEHgaRKCN4gvt7Kj3iBp+xZ3G/2EYtvJFfE3/RWWxBTQMeoJWsTtAMNZVrI61bNMKbY2hFq3kEcwetaNWOYGTxaUWregTzAq1oJWssGFmYWtFqGcEcQCtayWKXXcObBWjFNM7gHdaGL2jFNJ4xBjWyQWqlNGTP8+7uA/iBVrQ6RDD70IoWb+hAMC0IHRNJzCFRhpD2uNiFKcO4h/sC2TnkQJvFFFZxDnnp8vk3NhE88HypwzhGIeeVlm5Moqt0pyaK/gGUDlZx6Dxk1gAAAABJRU5ErkJggg==');
+	height: 30px;
+	width: 30px;
+}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+       Курс "{{course.name}}"
+{% endblock %}
+
+{% block extra_links %}
+    <script src="{% static 'base/subscribe.js' %}"></script>
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-8 col-sm-12">
+			<h1>{{course.name|capfirst}}</h1>
+			<br>
+			{% if user == course.owner%}
+			<a href="{% url 'tasks:task_list' course_id=course.pk %}" class="btn btn-secondary">Упражнения</a>
+			<a href="{% url 'tasks:update_course' pk=course.pk %}" class="btn btn-secondary">Редактировать</a>
+			<a href="#" class="btn btn-secondary">Статистика</a>
+			<a href="#" class="btn btn-secondary">Пригласить студентов</a>
+			{% else %}
+			<!-- этот span критически важен!!!! -->
+			<span>  
+			{% if course in subscribes %}
+			<a href="{% url 'tasks:course_unsubscribe' pk=course.pk %}" class="btn btn-danger btn-lg" onclick="unsubscribe(event)">Отписаться</a>
+			{% else %}
+			<a href="{% url 'tasks:course_subscribe' pk=course.pk %}" class="btn btn-primary btn-lg" onclick="subscribe(event, '', 'Отписаться')">Записаться на курс</a>
+			{% endif %}
+			</span>
+			<!-- этот span заканчивается тут!!!! -->
+			<a href="{% url 'tasks:task_list' course_id=course.pk %}" class="btn btn-link btn-lg">Упражнения</a>
+			{% endif %}
+		</div>
+		<div class="col-md-4 col-sm-12">
+			<img src="https://s31333.cdn.ngenix.net/f1367c/CACHE/images/cover/654f3a08fd4e191200fd890c4772620e4fa36630/53eae97be9910368bafbff6771ab81d0.png" alt="" class="course-image mx-auto" style="display: block;">
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-8">
+		{{course.description|linebreaks}}
+		</div>
+		<div class="col-4">
+			<table class="table table-sm noborder">
+	  <tbody>
+	    <tr>
+	      <th scope="row">Автор</th>
+	      <td>{{course.owner.get_full_name}}</td>
+	    </tr>
+	    <tr>
+	      <th scope="row">Количество заданий</th>
+	      <td>{{course.tasks.count}}</td>
+	    </tr>
+	    <tr>
+	      <th scope="row">Сложность</th>
+	      <td>
+	      	{% with ''|center:course.difficulty as range %}
+				{% for _ in range %}
+				    <i class="fas fa-star"></i>
+				{% endfor %}
+			{% endwith %}
+
+			{% with course.difficulty|add:':' as len %}
+				{% with '12345'|slice:len as range %}
+						{% for _ in range %}
+						    <i class="far fa-star"></i>
+						{% endfor %}
+				{% endwith %}
+			{% endwith %}	
+	      </td>
+	    </tr>
+	    <tr>
+	      <th scope="row">Дата публикации</th>
+	      <td>{{course.published_date|date:'d.m.Y'|default:"Не опубликован"}}</td>
+	    </tr>
+	  </tbody>
+	</table>
+		</div>
+
+
+		<!-- <div class="btn-group" role="group">
+
+	    {% if user.is_teacher %}
+	      <a href="{% url 'tasks:update_course' pk=course.pk %}" class="btn btn-secondary">Редактировать</a> 
+	      
+		  <div class="btn-group" role="group">
+		    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		      Дополнительно
+		    </button>
+		    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a href="{% url 'tasks:task_list' course_id=course.id %}" class="dropdown-item"">Список заданий</a>
+                    <a href="#" class="dropdown-item">Статистика</a>
+                    <a href="#" class="dropdown-item">Пригласить студентов</a>
+		    </div>
+		  </div>
+		{% else %}
+            <a href="#" class="btn btn-success">Записаться на курс</a>
+            <a href="#" class="btn btn-danger">Отписаться от курса</a>
+        {% endif %}
+		</div> -->
+
+	</div>
+{% endblock %}
