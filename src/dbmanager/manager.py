@@ -34,7 +34,7 @@ class DBManager():
             self.cursor.execute(query)
         except Exception as e:
             print(e)
-            return None
+            return ('error', e)
 
         try: 
             res = self.cursor.fetchall()

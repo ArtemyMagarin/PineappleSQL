@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, V
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-
+from django.db.models import F, Count, Value
 
 from .forms import CourseForm, TaskForm, DataBaseForm, TableForm
 from .models import Course, Task, Progress, Subscribes, Task_db, Task_table
@@ -189,8 +189,10 @@ class TaskDetail(DetailView):
         context = super().get_context_data(**kwargs)
         course = get_object_or_404(Course, pk=self.kwargs['course_id'])
         context['progress'] = Progress.objects.filter(owner=self.request.user, course=course)
-        context['tasks'] = Task.objects.filter(course=course)
-        context['doneTasksLen'] = Progress.objects.filter(owner=self.request.user, course=course, is_passed=True)
+        context['tasks'] = Task.objects.filter(course=course).annotate(is_passed=F('progress__is_passed'))
+        context['doneTasks'] = Progress.objects.filter(owner=self.request.user, course=course, is_passed=True)
+
+        context['data'] = Progress.objects.get(owner=self.request.user, course=course, task=self.get_object()).data
         return context
 
 
@@ -350,7 +352,6 @@ class TestMysql(View):
         return HttpResponse(str(rows))
         
 
-
 class TableDetail(DetailView):
     model = Task_table
     template_name = 'tasks/table_detail.html'
@@ -391,3 +392,91 @@ class DatabaseDetail(DetailView):
         if self.get_object().owner != request.user:
             return redirect('tasks:course_list')
         return super(DatabaseDetail, self).dispatch(request, *args, **kwargs)
+
+
+class UpdateProgress(View):
+
+    def is_passed(self, excluded_keywords, keywords, db, data, answer):
+        for s in excluded_keywords:
+            if s in data.lower():
+                return False 
+
+        for s in keywords:
+            if not s in data.lower():
+                return False
+
+        manager = DBManager()
+        manager.use_db(db.staffname)
+
+        student_rows = manager.get_rows(data)
+        
+        if student_rows[0] == 'error':
+            manager.close()
+            return False
+            # return
+
+
+        student_field_names = [i[0] for i in manager.get_cursor().description]
+
+        right_rows = manager.get_rows(answer)
+        right_field_names = [i[0] for i in manager.get_cursor().description]
+
+        manager.close()
+
+        if len(right_field_names) != len(student_field_names):
+            return False
+
+        for n in right_field_names:
+            if n.lower() not in [i.lower() for i in student_field_names]:
+                return False
+
+        mp =  [[str(i).lower() for i in student_field_names].index(str(n).lower()) for n in right_field_names]
+
+        for x, y in zip(right_rows, student_rows):
+            for i in range(len(x)):
+                print(x[i], y[mp[i]])
+                if x[i] != y[mp[i]]:
+                    return False
+
+        return (True, student_rows, student_field_names)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_teacher:
+            return redirect('tasks:course_list')
+        
+        user = request.user
+        course = get_object_or_404(Course, pk=kwargs['course_id']) 
+        task   = get_object_or_404(Task, pk=kwargs['pk'], course=course)
+
+        db = task.task_db
+        table = task.task_table
+
+        print(table.name, table.staffname, request.POST['query'])
+        raw_data = request.POST['query']
+        data = raw_data.replace(table.name, table.staffname)
+        answer = task.answer.replace(table.name, table.staffname)
+
+        keywords = task.keywords.lower().split(', ') 
+        excluded_keywords = task.excluded_keywords.lower().split(', ')
+
+        res = self.is_passed(excluded_keywords, keywords, db, data, answer)
+        if res:
+            is_passed, student_rows, student_field_names=res
+        else: 
+            is_passed, student_rows, student_field_names = (False, '', '')
+
+        progress, created = Progress.objects.get_or_create(owner=user, course=course, task=task)
+        progress.data = raw_data
+        if is_passed:
+            progress.is_passed = is_passed
+        progress = progress.save()
+
+        if len(Task.objects.filter(course=course)) == len(Progress.objects.filter(owner=user, course=course, is_passed=True)):
+            subs = Subscribes.objects.get(owner=user, course=course)  
+            subs.is_passed=True
+
+        return JsonResponse({'is_passed': is_passed, 'rows': student_rows, 'heads': student_field_names})
+        
+          
+            
+

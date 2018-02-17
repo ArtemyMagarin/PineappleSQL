@@ -175,7 +175,7 @@ class Progress(models.Model):
 
     task = models.ForeignKey(
         Task,
-        related_name="+",
+        related_name="progress",
         on_delete=models.CASCADE,
         null=True
     )
@@ -200,3 +200,5 @@ class Subscribes(models.Model):
         related_name="subscribes", 
         on_delete=models.CASCADE,
     )
+
+    is_passed = models.BooleanField(default=False)

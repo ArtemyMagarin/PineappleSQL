@@ -7,6 +7,7 @@
 {% endblock %} 
 
 {% block extra_links %}
+<script type="text/javascript" src="{% static 'base/send_data.js' %}"></script>
 {% endblock %}
 
 {% block form %} 
@@ -26,12 +27,14 @@
 	<div class="row">
 		<div class="col-3">
 			<h5>Задания</h5>
-			<h6 class="text-muted">Пройдено {{doneTasksLen|length}} из {{tasks|length}}</h6>
+			<h6 class="text-muted">Пройдено {{doneTasks|length}} из {{tasks|length}}</h6>
 			<div class="card">
 				{% for t in tasks %}
 				<div class="list-group list-group-flush" style="">
 				{% if t.is_passed %}
 				  <a href="{% url 'tasks:view_task' pk=t.id course_id=t.course.id %}" class="list-group-item list-group-item-action list-group-item-success">{{forloop.counter}}. {{t.name}}</a>
+				
+				
 				{% else %}
 				  <a href="{% url 'tasks:view_task' pk=t.id course_id=t.course.id %}" class="list-group-item list-group-item-action">{{forloop.counter}}. {{t.name}}</a>
 				{% endif %}
@@ -63,20 +66,27 @@
 					<div class="card-block">	
 					<h5 class="card-title">Запрос</h5>
 					<p class="card-text">
-					<form>					 					 
+									 					 
 					  <div class="form-group">					    
-					    <textarea class="form-control" id="sqlquery" rows="10"></textarea>
+					    <textarea class="form-control" name="query" id="query" rows="10">{{data}}</textarea>
 					  </div>
-					  <input type="reset" class="btn btn-warning" value="Очистить">
-					  <button type="submit" class="btn btn-primary">Выполнить</button>
-					</form>
+					  <input type="reset" class="btn btn-warning" value="Очистить" onclick="$('#query').val('')">
+					  <button onclick="submit('{% url 'tasks:update_progress' course_id=task.course.id pk=task.id %}')" class="btn btn-primary">Выполнить</button>
+					
 					</p>
 				</div>
 				</div>
+					   
 				<br>
+				<div id="result"></div>
 		</div>
 	</div>
+<script type="text/javascript">
+	window.onbeforeunload = function (event) {
+            submit('{% url 'tasks:update_progress' course_id=task.course.id pk=task.id %}')
+        }
 
+</script>
 		
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@ from .views import CourseList, CourseCreate, CourseDetail, CourseUpdate, GlobalC
 from .views import TaskList, TaskCreate, TaskDetail, TaskUpdate
 from .views import Subscribe, Unsubscribe, ToggleLike
 from .views import TableCreate, DatabaseCreate
-from .views import TestMysql, DatabaseDetail, TableDetail
+from .views import TestMysql, DatabaseDetail, TableDetail, UpdateProgress
 
 from einvite.views import invites
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path('<int:course_id>/tasks/', TaskList.as_view(), name='task_list'),
     path('<int:course_id>/tasks/new/', TaskCreate.as_view(), name='create_task'),
     path('<int:course_id>/tasks/<int:pk>/', TaskDetail.as_view(), name='view_task'),
+    path('<int:course_id>/tasks/<int:pk>/progress', UpdateProgress.as_view(), name='update_progress'),
     path('<int:course_id>/tasks/<int:pk>/edit/', TaskUpdate.as_view(), name='update_task'),
 
     path('<int:course_id>/invite/', invites, name='invite_students'),
