@@ -40,6 +40,49 @@ class Course(models.Model):
         return reverse_lazy("tasks:view_course", kwargs={'pk': self.id})
 
 
+
+class Task_db(models.Model):
+    owner = models.ForeignKey(
+        'accounts.User', 
+        related_name="task_dbs", 
+        on_delete=models.CASCADE,
+    )
+    dbname = models.CharField(max_length=150)
+    staffname = models.CharField(max_length=255, null=True)
+
+    description = models.TextField(null=True)
+
+    def __str__(self):
+        return self.dbname
+
+    def get_absolute_url(self):
+        return reverse_lazy("tasks:view_task_db", kwargs={'pk': self.id})
+
+
+class Task_table(models.Model):
+    owner = models.ForeignKey(
+        'accounts.User', 
+        related_name="task_tables", 
+        on_delete=models.CASCADE,
+    )
+    db = models.ForeignKey(
+        Task_db,
+        related_name="task_tables",
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(max_length=150)
+    staffname = models.CharField(max_length=255, null=True)
+
+    description = models.TextField(default="--")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse_lazy("tasks:view_task_table", kwargs={'pk': self.id})
+
+
+
 class Task(models.Model):
     owner = models.ForeignKey(
         'accounts.User', 
@@ -53,6 +96,20 @@ class Task(models.Model):
     answer = models.TextField()
     keywords = models.CharField(max_length=255)
     excluded_keywords = models.CharField(max_length=255)
+
+    task_db = models.ForeignKey(
+        Task_db, 
+        related_name='tasks', 
+        null=True,
+        on_delete=models.PROTECT
+    )
+
+    task_table = models.ForeignKey(
+        Task_table, 
+        related_name='tasks', 
+        null=True,
+        on_delete=models.PROTECT
+    )
 
 
     is_published = models.BooleanField(default=False)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %} 
+       Курс "{{course.name}}"
+{% endblock %}
+
+{% block extra_links %}
+    <script src="{% static 'base/subscribe.js' %}"></script>
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+
+{% block content %}
+        <h2>{{header}}</h2>
+        <br>
+	<a href="{% url 'tasks:view_course' pk=pk %}">{{a|safe}}</a>
+
+{% endblock %}

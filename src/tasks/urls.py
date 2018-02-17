@@ -2,6 +2,10 @@ from django.urls import path, re_path
 from .views import CourseList, CourseCreate, CourseDetail, CourseUpdate, GlobalCourseList
 from .views import TaskList, TaskCreate, TaskDetail, TaskUpdate
 from .views import Subscribe, Unsubscribe, ToggleLike
+from .views import TableCreate, DatabaseCreate
+from .views import TestMysql, DatabaseDetail, TableDetail
+
+from einvite.views import invites
 
 app_name = 'tasks'
 
@@ -21,7 +25,18 @@ urlpatterns = [
     path('<int:course_id>/tasks/<int:pk>/', TaskDetail.as_view(), name='view_task'),
     path('<int:course_id>/tasks/<int:pk>/edit/', TaskUpdate.as_view(), name='update_task'),
 
+    path('<int:course_id>/invite/', invites, name='invite_students'),
+
     path('<int:pk>/subscribe/', Subscribe.as_view(), name="course_subscribe"),
     path('<int:pk>/unsubscribe/', Unsubscribe.as_view(), name="course_unsubscribe"),
+
+    path('db/new/', DatabaseCreate.as_view(), name="create_db"),
+    path('db/<int:pk>', DatabaseDetail.as_view(), name="view_task_db"),
+    path('table/new/', TableCreate.as_view(), name="create_table"),
+    path('table/<int:pk>', TableDetail.as_view(), name="view_task_table"),
+
+    path('test/', TestMysql.as_view()),
+
+
 
 ]

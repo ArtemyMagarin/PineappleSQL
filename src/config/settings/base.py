@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'tasks',
+    'einvite',
     'widget_tweaks',
     # 'notes',
     # 'accounts',

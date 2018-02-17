@@ -5,12 +5,14 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 
-from .forms import CourseForm, TaskForm
-from .models import Course, Task, Progress, Subscribes
+from .forms import CourseForm, TaskForm, DataBaseForm, TableForm
+from .models import Course, Task, Progress, Subscribes, Task_db, Task_table
 
 from django.shortcuts import redirect, get_object_or_404
 
-# Create your views here.
+
+from dbmanager.manager import DBManager
+
 
 class CourseCreate(CreateView):
     template_name = 'tasks/course_form.html'
@@ -134,6 +136,12 @@ class TaskCreate(CreateView):
         kw['kw'] = self.kwargs
         return kw
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['course_id'])
+
+        return context
+
 
 class TaskUpdate(UpdateView):
     model = Task
@@ -170,7 +178,20 @@ class TaskDetail(DetailView):
     def dispatch(self, request, *args, **kwargs):
         if not self.get_object().is_published and self.get_object().owner != request.user:
             return redirect('tasks:view_task', pk=kwargs['pk'], course_id=kwargs['course_id'])
+
+        if request.user.is_teacher:
+            self.template_name = 'tasks/task_detail_teacher.html'
+
         return super(TaskDetail, self).dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = get_object_or_404(Course, pk=self.kwargs['course_id'])
+        context['progress'] = Progress.objects.filter(owner=self.request.user, course=course)
+        context['tasks'] = Task.objects.filter(course=course)
+        context['doneTasksLen'] = Progress.objects.filter(owner=self.request.user, course=course, is_passed=True)
+        return context
 
 
 class TaskList(ListView):
@@ -247,3 +268,126 @@ class ToggleLike(View):
                 res = 'LIKED'
 
         return JsonResponse({'result': res})  
+
+
+class DatabaseCreate(CreateView):
+    template_name = "tasks/db_form.html"
+    form_class = DataBaseForm
+    model = Task_db
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_teacher:
+            return redirect('tasks:course_list')
+        return super(DatabaseCreate, self).dispatch(request, *args, **kwargs)
+
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.staffname = str(self.request.user.pk)+'_'+str(int(timezone.now().timestamp()))+'_'+form.cleaned_data['dbname']
+        
+        manager = DBManager()
+        manager.create_db(form.instance.staffname)
+        manager.close()
+
+        form.save() 
+
+        return super(DatabaseCreate, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kw = super(DatabaseCreate, self).get_form_kwargs()
+        kw['request'] = self.request
+        kw['kw'] = self.kwargs
+        return kw
+
+
+class TableCreate(CreateView):
+    template_name = "tasks/table_form.html"
+    form_class = TableForm
+    model = Task_table
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_teacher:
+            return redirect('tasks:course_list')
+        return super(TableCreate, self).dispatch(request, *args, **kwargs)
+
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.staffname = str(self.request.user.pk)+'_'+str(int(timezone.now().timestamp()))+'_'+form.cleaned_data['name']
+        form.instance.db = form.cleaned_data['db']
+
+        query = form.cleaned_data['create_query'].replace(form.cleaned_data['name'], form.instance.staffname, 1)
+        data_query = form.cleaned_data['data_query'].replace(form.cleaned_data['name'], form.instance.staffname, 1)
+        manager = DBManager()
+        manager.use_db(form.cleaned_data['db'].staffname)
+        manager.create_table(query)
+        manager.exec(data_query)
+        manager.close()
+
+        form.save() 
+
+        return super(TableCreate, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kw = super(TableCreate, self).get_form_kwargs()
+        kw['request'] = self.request
+        kw['kw'] = self.kwargs
+        return kw
+
+
+class TestMysql(View):
+    def dispatch(self, request, *args, **kwargs):
+        manager = DBManager()
+        manager.create_db('test_db')
+        manager.use_db('test_db')
+        manager.create_table("CREATE TABLE t1 (c1 INT STORAGE DISK, c2 INT STORAGE MEMORY)")
+        manager.exec("INSERT INTO t1 (c1, c2) values (1, 2), (3, 4)")
+        rows = manager.get_rows("SELECT * FROM t1")
+        manager.close()
+
+        return HttpResponse(str(rows))
+        
+
+
+class TableDetail(DetailView):
+    model = Task_table
+    template_name = 'tasks/table_detail.html'
+    context_object_name = 'table'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().owner != request.user:
+            return redirect('tasks:course_list')
+        return super(TableDetail, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        table = self.get_object()
+        table_name = table.staffname
+        db_name = table.db.staffname
+
+        manager = DBManager()
+        manager.use_db(db_name)
+
+        rows = manager.get_rows("select * from {} limit 25".format(table_name))
+        field_names = [i[0] for i in manager.get_cursor().description]
+
+
+        context['rows'] = rows
+        context['field_names'] = field_names
+
+        manager.close()
+
+        return context
+
+
+class DatabaseDetail(DetailView):
+    model = Task_db
+    template_name = 'tasks/db_detail.html'
+    context_object_name = 'db'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().owner != request.user:
+            return redirect('tasks:course_list')
+        return super(DatabaseDetail, self).dispatch(request, *args, **kwargs)

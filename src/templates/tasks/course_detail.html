@@ -25,7 +25,7 @@
 			<a href="{% url 'tasks:task_list' course_id=course.pk %}" class="btn btn-secondary">Упражнения</a>
 			<a href="{% url 'tasks:update_course' pk=course.pk %}" class="btn btn-secondary">Редактировать</a>
 			<a href="#" class="btn btn-secondary">Статистика</a>
-			<a href="#" class="btn btn-secondary">Пригласить студентов</a>
+			<a href="{% url 'tasks:invite_students' course_id=course.pk %}" class="btn btn-secondary">Пригласить студентов</a>
 			{% else %}
 			<!-- этот span критически важен!!!! -->
 			<span>  
