@@ -187,12 +187,17 @@ class TaskDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        course = get_object_or_404(Course, pk=self.kwargs['course_id'])        
+        context['tasks'] = Task.objects.filter(course=course)
+        if self.request.user.is_teacher:
+            return context
         course = get_object_or_404(Course, pk=self.kwargs['course_id'])
         context['progress'] = Progress.objects.filter(owner=self.request.user, course=course)
         context['tasks'] = Task.objects.filter(course=course).annotate(is_passed=F('progress__is_passed'))
         context['doneTasks'] = Progress.objects.filter(owner=self.request.user, course=course, is_passed=True)
-
-        context['data'] = Progress.objects.get(owner=self.request.user, course=course, task=self.get_object()).data
+        progress = Progress.objects.filter(owner=self.request.user, course=course, task=self.get_object())
+        if progress.first():
+            context['data'] = progress.first().data
         return context
 
 
@@ -425,7 +430,9 @@ class UpdateProgress(View):
 
         if len(right_field_names) != len(student_field_names):
             return False
-
+        if len(right_rows) != len(student_rows):
+            return False
+        print(right_field_names, right_rows)
         for n in right_field_names:
             if n.lower() not in [i.lower() for i in student_field_names]:
                 return False
@@ -479,4 +486,3 @@ class UpdateProgress(View):
         
           
             
-
