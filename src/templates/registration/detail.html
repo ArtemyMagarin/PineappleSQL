@@ -1,0 +1,57 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+    "{{user.get_short_name}}"
+{% endblock %} 
+
+{% block extra_links %}
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+
+{% block content %}	
+<div class="row">	
+	<div class="col-sm-4 card-test">
+		<h3>{{ user.get_short_name }}</h3>
+		<div class="card card-outline card-test">
+			{% if not user.is_teacher %}
+				<label>Группа {{ user.get_group }}</label>
+				<label>Рейтинг: {{ user.get_rate }}</label>
+			{% endif %}
+			<a href="{% url 'tasks:course_list' %}">Мои курсы</a>
+			<a href="{% url 'accounts:edit' %}">Редактировать профиль</a>
+		</div>
+	</div>
+	<div class="col-sm-8 card-test">
+		<h3>Мои события</h3>
+		{% if user.have_news %}
+			{% for n in news %}
+				<div class=" card card-outline card-test">
+					<big>{{ n.get_name }}</big>
+					{{ n.get_content }}
+					<!-- <a href="">Подробнее</a> how to do it??? -->
+					<div class="text-muted text-right" style="margin-top: 2%">
+						{{ n.get_date }}
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			Новых событий нет
+		{% endif %}
+	</div>	
+	</div>
+		
+{% endblock %}

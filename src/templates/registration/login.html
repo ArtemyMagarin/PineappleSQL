@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Вход
+{% endblock %}
+
+{% block extra_links %} 
+    <link rel="stylesheet" href='{%static "base/signin.css"%}'>
+{% endblock %}
+
+
+{% block content %}
+    <form method="post" class="form-signin">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Войдите в аккаунт</h2>
+        <label for="inputEmail" class="sr-only">Email</label>
+        {% render_field form.username class+="form-control mr-sm-2" placeholder="Email" %}
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        {% render_field form.password class+="form-control mr-sm-2" placeholder="Пароль" %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+        <a href="{% url 'accounts:register' %}">Регистрация</a>
+        <a href="{% url 'accounts:password_reset' %}">Забыли пароль?</a>
+      </form>
+{% endblock %}

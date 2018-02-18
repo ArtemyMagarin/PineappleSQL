@@ -1,0 +1,104 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} 
+       Просмотр задания
+{% endblock %} 
+
+{% block extra_links %}
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+    <style type="text/css">
+    	#main {
+    		padding-top: 0;
+    	}
+    </style>
+{% endblock %}
+
+{% block content %}
+</div>
+<div class="container-fluid" style="padding-top: 30px;">
+	<div class="row">
+		<div class="col-3">
+			<h5>Задания</h5>
+			<h6 class="text-muted">Курс "{{task.course.name}}"</h6>
+			<br>
+			<div class="card">
+				{% for t in tasks %}
+				<div class="list-group list-group-flush" style="">
+				{% if t.is_published %}
+				  <a href="{% url 'tasks:view_task' pk=t.id course_id=t.course.id %}" class="list-group-item list-group-item-action list-group-item-success">{{forloop.counter}}. {{t.name}}</a>
+				{% else %}
+				  <a href="{% url 'tasks:view_task' pk=t.id course_id=t.course.id %}" class="list-group-item list-group-item-action list-group-item-warning">{{forloop.counter}}. {{t.name}}</a>
+				{% endif %}
+				</div>
+				{% empty %}
+				<h6>Нет заданий</h6>
+				{% endfor %}
+			</div>
+
+		</div>
+		<div class="col-9">
+
+			<div class="d-flex justify-content-between align-items-center">
+				<h3>"{{task.name|capfirst}}" <small class="text-muted">{% if task.is_published %}опубликован{% else %}не опубликован{%endif%}</small></h3>
+				<span>
+				<a href="{% url 'tasks:update_task' course_id=task.course.id pk=task.id %}" class="btn btn-primary">Редактировать</a>
+				<a href="{% url 'tasks:create_task' course_id=task.course.id %}" class="btn btn-primary">Добавить задание</a>
+				</span>
+			</div>
+			<br>
+			<div class="card card-outline">
+			    <div class="card-block">
+					<h5 class="card-title"><a href="{{task.task_db.get_absolute_url}}">База данных</a></h5>
+					<p class="card-text">{{task.task_db.description}}</p>	
+				</div>
+			</div>
+			<br>
+			<div class="card card-outline">
+				<div class="card-block">
+					<h5 class="card-title"><a href="{{task.task_table.get_absolute_url}}">Таблица</a></h5>
+					<p class="card-text">{{task.task_table.description}}</p>	
+				</div>
+			</div>
+				<br>
+				<div class="card card-outline ">
+					<div class="card-block">	
+					<h5 class="card-title">Задание</h5>
+					<p class="card-text">{{task.question}}</p>
+					</div>
+				</div>
+				<br>
+				<div class="card card-outline ">
+					<div class="card-block">	
+					<h5 class="card-title">Обязательные операторы</h5>
+					<p class="card-text">{{task.keywords}}</p>
+					</div>
+				</div>
+				<br>
+				<div class="card card-outline ">
+					<div class="card-block">	
+					<h5 class="card-title">Запрещенные операторы</h5>
+					<p class="card-text">{{task.excluded_keywords}}</p>
+					</div>
+				</div>
+				<br>
+				<div class="card card-outline ">
+					<div class="card-block">	
+					<h5 class="card-title">Эталонный запрос</h5>
+					<p class="card-text">{{task.answer}}</p>
+					</div>
+				</div>
+				<br>
+				
+		</div>
+	</div>
+
+		
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% autoescape off %}
+Здравстуйте!
+
+{{user.get_short_name}} приглашает вас записаться на курс {{course.name}}
+
+Для прохождения курса, зарегистрируйтесь на сайте: 
+http://{{ domain }}
+
+Ссылка на курс
+http://{{ domain }}{% url 'tasks:view_course' pk=course.pk %}
+
+Если ссылка неактивна, скопируйте ее в адресную строку Вашего браузера и нажмите Enter.
+
+С уважением, 
+Команда PineappleSQL
+{% endautoescape %}

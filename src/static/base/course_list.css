@@ -1,0 +1,92 @@
+.progress {
+    height: 1px;
+    background: #e3e3e3;
+    margin: 5px 0;
+}
+
+.courses-list {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px -20px 0 -20px;
+}
+
+.courses-list .col {
+    max-width: 337px;
+}
+
+.courses-list .course {
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #0275d8;;
+    /*padding-top: 15px;*/
+    height: 450px;
+    position: relative;
+    margin: 0 0 40px 0;
+    /*padding: 10px 10px;*/
+}
+
+.courses-list .course:hover {
+  box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.2);
+}
+
+.courses-list .uho {
+    display: block;
+    overflow: hidden;
+    max-height: 170px;
+}
+
+.courses-list img {
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+}
+
+.courses-list .course .course-content {
+	padding-top: 0;
+    padding-left: 25px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.courses-list .course .course-title {
+    font-size: 21px;
+    line-height: 25px;
+    margin-top: 10px;
+}
+
+.courses-list .course .course-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.courses-list .course .course-title a:hover {
+    color: #489acc;
+}
+
+.courses-list .course .course-content .course-info {
+    font-size: 17px;
+    margin-bottom: 5px;
+    padding-right: 15px; 
+    position: relative;
+    color: #333;
+}
+
+.courses-list .course .course-content .course-info .icon {
+    left: -42px;
+    position: absolute;
+    top: -5px;
+}
+
+
+
+
+.courses-list .course .footer-line {
+    background: #f8f8f8;
+    line-height: 45px;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    right: 0;	
+    border-radius: 0 0 5px 5px;
+    text-align: center;
+}

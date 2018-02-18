@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+       Пригласить студентов
+{% endblock %}
+
+{% block extra_links %}
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+		<script type="text/javascript">
+		
+		var link_list = [];
+
+		// $("#emaillist").keypress(function() {
+		// 	find_email();
+		// });
+
+		function before_submit() {
+			$('#emaillist').val("");
+			link_list.forEach((item)=> {
+				var text = $('#emaillist').val();
+				text += " " + item; 
+				$('#emaillist').val(text);
+			})
+			// alert($('#emaillist').val());
+		}
+
+		function delete_email(ob) {						
+			link_list.splice(link_list.indexOf(ob.html()), 1);
+			ob.remove();
+		}
+
+		function find_email() {
+			var list = $('#emaillist').val();
+			var exp = /[\S]+@[\S]+\.[\S]+/ig;
+
+			var raw_links = list.match(exp);			
+			if (raw_links != null){
+				raw_links.forEach((item)=>{
+					let e_item = document.createElement("li");
+					e_item.setAttribute('class', 'list-group-item')
+					e_item.setAttribute('onclick',"delete_email($(this))");
+			        e_item.append(item);
+			        list = list.replace(item, '');
+					$(".list-group-flush").append(e_item);					
+					link_list[link_list.length] = item;
+			    });
+				$("#emaillist").val(list);
+			}			
+		}
+
+	</script>
+{% endblock %}
+
+{% block form %} 
+    <a class="nav-link" href="{% url 'accounts:profile' %}">{{user.get_short_name}}</a>
+    <a class="nav-link" href="{% url 'accounts:edit' %}">Настройки</a>  
+    <a class="nav-link" href="{% url 'accounts:logout' %}">Выход</a>
+{% endblock %}
+
+{% block content %}
+		<h3>Пригласить студентов в курс {{ course }}</h3>
+		<div class="row card-test">			
+			<div class="col-sm-4 card-outline ">
+				<h5>Выбранные адреса</h5>				
+				<div class="text-muted">
+					<small>Нажмите на адрес, чтобы удалить его</small>
+				</div>											
+				<ul class="list-group list-group-flush"></ul>					
+			</div>
+			<div class="col-sm-8 card-outline ">
+				<h5>Введите адреса</h5>
+				<form method="post" accept-charset="utf-8">
+					{% csrf_token %}
+					{% for field in form %}
+						{{ field |add_class:"form-control" }}
+					{% if field.errors %}
+			            {% for error in field.errors %}
+			            <div class="alert alert-danger" role="alert">
+			              {{error}}
+			            </div>
+			            {% endfor %}
+			        {% endif %}
+					{% endfor %}
+					<br>
+					<div id="add" onclick="find_email()" class="btn btn-secondary">Добавить адреса</div>
+					<input onclick="before_submit()" class="btn btn-primary" type="submit" name="submit">
+				</form>
+			</div>
+		</div>
+{% endblock %}

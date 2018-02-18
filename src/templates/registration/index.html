@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Pineapple SQL
+{% endblock %}
+
+{% block form %} 
+    <form class="form-inline my-2 my-lg-0" action="{% url 'accounts:login' %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {% render_field form.username class+="form-control mr-sm-2" placeholder="Email" %}
+        {% render_field form.password class+="form-control mr-sm-2" placeholder="Пароль" %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <button class="btn btn-outline-primary mr-sm-2" type="submit">Вход</button>
+        <a href="{% url 'accounts:register' %}">Регистрация</a>
+    </form>
+{% endblock %}
+
+
+{% block content %}
+        <div class="jumbotron">
+            <h1>Проверь свои знания SQL</h1> 
+            <a href="{% url 'accounts:register' %}" class="btn btn-lg btn-primary">А ты пройдёшь тест?</a>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-outline-primary text-center">
+                    <div class="card-block">
+                      <p>Сайт создан для преподавателей и студентов, изучающих SQL
+                         </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-outline-primary text-center">
+                    <div class="card-block">
+                      <p>Тесты посвящены следующим темам: синтаксис SQL, SELECT, JOIN и т. д.
+                      </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-outline-primary text-center">
+                    <div class="card-block">
+                      <p>Более 000000 пользователей уже проходят наши тесты</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+{% endblock %}
+
+{% block footer %} 
+<footer class="fixed-bottom">
+    <div class="container">
+      <span class="text-muted">
+        создано Pineapple: Артемий Магарин, <a href="https://t.me/O_Giroud">Пётр Ревякин</a>, <a href="https://www.linkedin.com/in/valeria-stromtsova-67016512b/">Валерия Стромцова</a>, Егор Скрутелев
+      </span>
+    </div>
+</footer>
+{% endblock %}

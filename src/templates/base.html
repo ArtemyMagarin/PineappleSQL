@@ -1,0 +1,40 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href='{%static "base/style.css"%}'>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  
+
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    
+  {% block extra_links %}
+  {% endblock %}
+</head>
+<body>
+  <nav class="navbar navbar-toggleable navbar-light bg-faded">
+    <div class="container">
+      <div class="collapse navbar-collapse">
+        <a class="navbar-brand" href="#">Pineapple SQL</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{%  url 'tasks:course_list' %}">Курсы</a>
+          </li>
+        </ul>
+        {% block form %}{% endblock %}
+      </div>
+    </div>
+  </nav>
+  <div class="container" id="main">
+    {% block content %}{% endblock %}
+  </div>
+  {% block footer %}{% endblock %}
+</body>
+</html>
